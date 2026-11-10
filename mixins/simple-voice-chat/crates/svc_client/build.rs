@@ -20,7 +20,7 @@ fn main() {
     let mut n = 0;
     for dir in ["celt", "silk", "silk/float", "src"] {
         for entry in walk(&root.join(dir)) {
-            let ps = entry.to_string_lossy().to_string();
+            let ps = entry.to_string_lossy().replace('\\', "/");
             let name = entry.file_name().unwrap().to_string_lossy().to_string();
             let skip = ps.contains("test")
                 || ps.contains("demo")
