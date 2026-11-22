@@ -1,0 +1,17 @@
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/a_host_without_a_backend_refuses_handle_calls.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/block_key.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/doubler.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/effect_key.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/fixturecontent.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/game_thread.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/here.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/install_parts_fixture.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/invalid_lookup_ids_refuse_registration_naming_the_requesting_mod.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/level.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/lie.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/nohost.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/on.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/register_game_keys.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/registry_keys_reject_unknown_unattached_requests_with_the_requesting_mod.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/rule_schema.rs");
+include!("/tmp/svc/.horizon/sdk/api/crates/horizon-mod-api/../../crates/horizon-mod-api/src/parts/shared_fixtures/type_key.rs");

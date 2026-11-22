@@ -1,0 +1,13 @@
+id = "simple_voice_chat"
+name = "simple_voice_chat"
+version = "1.1.0"
+description = "simple_voice_chat (Horizon Rust mod): an unofficial, independent Simple Voice Chat CLIENT for Horizon (MIT (c) 2026 sparticle). Not affiliated with Max Henkel (henkelmax), the author of Simple Voice Chat; it speaks the documented Simple Voice Chat wire protocol (compatibility version 20) so it interops with Java servers running the original mod. No code, assets, textures or lang files from the original Java mod are included.\n\nThe mod core: the config model (ptt key, mute, volume), the Simple Voice Chat 2.6.x protocol client (handshake, state, voice packets, AES-128-GCM encryption), the session state machine, push-to-talk and mute keys, positional mixing by server distance, groups, the Opus codec at 48 kHz mono / 20 ms frames (vendored libopus 1.4, Xiph.Org, BSD three-clause), and the audio device layer (cpal) behind the optional \"audio\" feature.\n\nAttribution: the protocol module is derived from the voicechat-server native mod in this registry (MIT, Ludovic Marie and the Horizon contributors); its MIT notice is carried in the package LICENSE.\n\nHonest status: nothing of this is visible in game yet. The client mod API has no net-channel hook, no key/input hook, no world-lifecycle hook, no tick hook and no command hook, so no voice happens in game and the /svc and /vcgroup gate has nothing to run in. The logic runs its tests; the seams stay recorded in the source README and get wired the day those surfaces land.\n\nThe package ships the full modular source (src/ + build.rs + the vendored libopus tree) with a Cargo.lock, matching the source revision on main.\n\nPinned to Horizon f00125f and horizon-mixins e59da909; built and tested against those revisions.\n\nLicence: MIT. Source: https://github.com/Sparticle62ops/horizon-simple-voice-chat\n"
+authors = ["sparticle"]
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "f00125f61f794aaa3d4e950d301f353b35b6ee3d"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
