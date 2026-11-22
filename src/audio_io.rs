@@ -60,7 +60,14 @@ fn open_in<T: cpal::SizedSample>(
         &cfg.config(),
         move |data: &[T], _: &cpal::InputCallbackInfo| {
             let mut q = q.lock().unwrap();
+            // Hard cap: 2 s at 48 kHz (96k samples). Without a voice server
+            // the reader drains nothing, so the queue would grow ~0.35-0.7
+            // GB/hour; past the cap we drop incoming audio instead.
+            const MIC_QUEUE_CAP: usize = 96_000;
             for s in data {
+                if q.len() >= MIC_QUEUE_CAP {
+                    break;
+                }
                 q.push_back(conv(*s));
             }
         },

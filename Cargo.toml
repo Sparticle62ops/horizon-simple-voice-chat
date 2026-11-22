@@ -1,3 +1,19 @@
-[workspace]
-members = ["mixins/simple-voice-chat/crates/svc_client"]
-resolver = "3"
+[package]
+name = "svc_client"
+version = "1.1.0"
+edition = "2021"
+license = "MIT"
+description = "Unofficial, independent Simple Voice Chat client for Horizon: protocol, session, audio, and the in-game runtime. Not affiliated with Max Henkel (henkelmax); speaks the documented Simple Voice Chat wire protocol. Protocol module derives from the horizon-mods voicechat-server native mod (MIT, Ludovic Marie and the Horizon contributors)."
+
+[dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
+ring = "0.17"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+cpal = { version = "0.16", optional = true }
+
+[build-dependencies]
+cc = "1.0"
+
+[features]
+audio = ["dep:cpal"]

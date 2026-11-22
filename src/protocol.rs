@@ -1,3 +1,10 @@
+//! The Simple Voice Chat wire protocol (compatibility version 20).
+//!
+//! Parts of this module are derived from the voicechat-server native mod
+//! in the horizon-mods registry: MIT License, Copyright (c) Ludovic Marie
+//! and the Horizon contributors (see LICENSE). The wire protocol itself is
+//! defined by Max Henkel's Simple Voice Chat; this is an unofficial,
+//! independent client and is not affiliated with Max Henkel.
 //! The voice chat wire format Simple Voice Chat 2.6.x clients speak
 //! (compatibility version 20), from the client's side: control messages on
 //! `voicechat:` channels over the game connection, and AES-128-GCM UDP

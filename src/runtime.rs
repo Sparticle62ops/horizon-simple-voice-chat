@@ -2,8 +2,9 @@
 //! hooks and the `svc_client_*` crates (clean-room, original work, MIT).
 //!
 //! Horizon's thin helpers call into the shared [`Glue`] below; everything
-//! testable is here and unit-tested. Not a copy of Matdoesteching's Simple
-//! Voice Chat: it implements the same documented wire protocol.
+//! testable is here and unit-tested. Not a copy of Max Henkel's (henkelmax) Simple
+//! Voice Chat: it implements the same documented wire protocol. This is
+//! an unofficial, independent client, not affiliated with Max Henkel.
 
 use std::collections::HashMap;
 use std::net::SocketAddr;
@@ -14,6 +15,14 @@ use crate::protocol as proto;
 use crate::session::{Event, Session};
 
 pub const PORT: &str = "simple-voice-chat";
+
+/// Whether a chat command belongs to this mod. Only `/svc` and `/vcgroup`
+/// (and their subcommands) are ours; a host that asks must run everything
+/// else untouched instead of swallowing it.
+pub fn command_is_ours(command: &str) -> bool {
+    let head = command.split_whitespace().next().unwrap_or("");
+    head == "svc" || head == "vcgroup"
+}
 
 /// Client settings, persisted at `<config>/simple_voice_chat/config.json`.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -50,9 +59,15 @@ pub struct Glue {
     /// Mod-channel packets waiting for the frame helper to send.
     pub pending_sends: Vec<(String, Vec<u8>)>,
     /// Live microphone capture; None until start_audio succeeds.
+    #[cfg(feature = "audio")]
     pub mic: Option<crate::audio_io::MicStream>,
+    #[cfg(not(feature = "audio"))]
+    pub mic: Option<()>,
     /// Live speaker output; None until start_audio succeeds.
+    #[cfg(feature = "audio")]
     pub speaker: Option<crate::audio_io::Speaker>,
+    #[cfg(not(feature = "audio"))]
+    pub speaker: Option<()>, 
     /// The Opus codec, created with the audio devices.
     pub codec: Option<crate::audio::VoiceCodec>,
 }
@@ -189,6 +204,18 @@ impl Glue {
     /// Open the microphone and speaker. Returns chat notes for what failed;
     /// called once per client start, devices outlive worlds.
     pub fn start_audio(&mut self) -> Vec<String> {
+        #[cfg(not(feature = "audio"))]
+        {
+            vec!["[voice] audio devices not compiled in this build (feature \"audio\" OFF); voice runs without capture/playback".to_string()]
+        }
+        #[cfg(feature = "audio")]
+        {
+            self.start_audio_on()
+        }
+    }
+
+    #[cfg(feature = "audio")]
+    fn start_audio_on(&mut self) -> Vec<String> {
         let mut notes = Vec::new();
         if self.mic.is_none() {
             match crate::audio_io::MicStream::open() {
@@ -214,6 +241,8 @@ impl Glue {
     /// The microphone side: when talking, turn captured audio into Opus
     /// packets on the session; always drain the capture so it stays fresh.
     fn pump_mic(&mut self) {
+        #[cfg(feature = "audio")]
+        {
         let talking = !self.cfg.muted
             && self.ptt_held
             && self
@@ -234,11 +263,18 @@ impl Glue {
                 s.push_mic(&packet);
             }
         }
+        }
+        #[cfg(not(feature = "audio"))]
+        {
+            // capture/playback not compiled (feature "audio" OFF); nothing to pump
+        }
     }
 
     /// The playback side: decode voice events and play them, applying the
     /// positional volume and the user's master volume.
     fn pump_speaker(&mut self, events: &[crate::session::Event]) {
+        #[cfg(feature = "audio")]
+        {
         let Some(spk) = &self.speaker else { return };
         for e in events {
             if let crate::session::Event::Voice { data, volume, .. } = e {
@@ -252,6 +288,11 @@ impl Glue {
                 crate::audio::mix(&mut pcm, volume * self.cfg.volume);
                 spk.play(&pcm);
             }
+        }
+        }
+        #[cfg(not(feature = "audio"))]
+        {
+            let _ = events; // playback not compiled (feature "audio" OFF)
         }
     }
 
@@ -300,6 +341,7 @@ impl Glue {
         if head != "svc" {
             return (String::new(), sends);
         }
+        debug_assert!(command_is_ours(command));
         match sub {
             "mute" => {
                 self.cfg.muted = true;
@@ -465,6 +507,16 @@ mod tests {
         g.on_net("voicechat:states", &body, None, Instant::now());
         assert_eq!(g.uuid_by_name.get("a"), Some(&9));
         assert_eq!(g.name_by_uuid.get(&10), Some(&"b".to_string()));
+    }
+
+    #[test]
+    fn command_gate_claims_only_ours() {
+        assert!(command_is_ours("svc mute"));
+        assert!(command_is_ours("vcgroup create den"));
+        assert!(!command_is_ours("login pass"));
+        assert!(!command_is_ours("msg Steve hi"));
+        assert!(!command_is_ours("tp Steve"));
+        assert!(!command_is_ours(""));
     }
 
     #[test]
